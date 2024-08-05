@@ -108,6 +108,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
 
         if st.session_state.page == 3:
             st.write("옷 정보 입력하는 화면")
+            st.write("추후 구현 예정")
 
         
     else: # 재방문 시 메인 페이지로 이동
@@ -128,5 +129,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.write(f"목적지 : {st.session_state.where}")
             st.write(f"시간 : {st.session_state.time}")
             st.write(f"착용 아이템 : {st.session_state.item}")
+
+            st.write("\n추후 구현 예정")
 
 
