@@ -95,6 +95,10 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
                 st.rerun()
 
         if st.session_state.page == 2: # 옷 정보 입력 선택 페이지
+            user_info[f"{st.session_state.username}"] = [st.session_state.gender,st.session_state.race,st.session_state.top,st.session_state.bottom,st.session_state.foot]
+            new_text = str(user_info)
+            with open('./user_info.txt','w',encoding='UTF-8') as f:
+                    f.write(new_text)
             st.write("(선택) 가지고 있는 옷 정보를 입력하시겠습니까? (나중에 언제든지 다시 입력할 수 있습니다.)")
             if st.button("예"):
                 st.session_state.page = 3
