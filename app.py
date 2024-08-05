@@ -56,7 +56,6 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
         if  key == st.session_state['username']: st.session_state.is_first = value
     if st.session_state.is_first: # 첫 방문 시 사전 정보 입력 페이지로 이동
         st.title("사전 정보 입력")
-        st.session_state.check
         if "page" not in st.session_state:
             st.session_state.page = 0
         if "gender" not in st.session_state:
