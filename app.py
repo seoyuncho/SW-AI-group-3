@@ -155,7 +155,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.main_page = 0
         if st.session_state.main_page == 0:
             st.session_state.outing = st.selectbox("오늘은 무슨 일로 외출하시나요?",("가족 모임", "친구들 모임 or 동창회", "생일파티", "데이트", "학교", "아르바이트"))
-            st.session_state.date = st.time_input("날짜 선택")
+            st.session_state.date = st.date_input("날짜 선택")
             st.session_state.time = st.time_input("시간 선택")
             st.session_state.item = st.text_input("착용하고 싶은 아이템이 있나요?")
             if st.button("옷 추천"):
@@ -173,6 +173,9 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             if len(str(now.day)) == 1: day = "0" + str(now.day)
             base_date = str(now.year) + month + day
             params["base_date"] = base_date
+            x,y = get_coordinates(st.session_state.do, st.session_state.city)
+            params["x"] = x
+            params["y"] = y
             response = requests.get(url, params = params)
             st.write(response.content)
             if st.session_state.do == "서울특별시":
@@ -185,10 +188,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
                 params["nx"] = 127
                 params["ny"] = 37
             
-            response = requests.get(url, params = params)
-            st.write(response.content)
             st.write(f"외출 목적 : {st.session_state.outing}")
-            st.write(f"목적지 : {st.session_state.where}")
             st.write(f"시간 : {st.session_state.time}")
             st.write(f"착용 아이템 : {st.session_state.item}")
             st.write("\n추후 구현 예정")
