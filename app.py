@@ -174,7 +174,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             params["nx"] = x
             params["ny"] = y
             for page in range(1,11):
-                url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=1000&pageNo=10&dataType=json&base_date={base_date}&base_time=0200&nx={x}&ny={y}"
+                url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=1000&pageNo={page}&dataType=json&base_date={base_date}&base_time=0200&nx={x}&ny={y}"
                 response = requests.get(url, verify=False)
                 res = response.json()
                 st.write(res)
