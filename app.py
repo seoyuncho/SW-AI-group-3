@@ -20,7 +20,7 @@ with open('./user_account.txt','r',encoding='UTF-8') as f:
 with open('./user_is_first.txt','r',encoding='UTF-8') as f:
     user_is_first = ast.literal_eval(f.read()) #고객의 첫 방문 여부
 with open('./user_info.txt','r',encoding='UTF-8') as f:
-    user_info = ast.literal_eval(f.read()) #[성별, 인종, 시, 구, 상의 사이즈, 허리 사이즈, 신발 사이즈]
+    user_info = ast.literal_eval(f.read()) #[성별, 도, 시/군/구, 상의 사이즈, 허리 사이즈, 신발 사이즈]
 with open('./user_info_optional.txt','r',encoding='UTF-8') as f:
     user_info_optional = ast.literal_eval(f.read())#[[옷 구분1, 옷 종류1, 색상1], [옷 구분2, 옷 종류2, 색상2], ...]
 
@@ -136,6 +136,12 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
         st.write("추후 구현 예정")
         
     else: # 재방문 시 메인 페이지로 이동
+        st.session_state.gender = user_info[st.session_state.username][0]
+        st.session_state.do = user_info[st.session_state.username][1]
+        st.session_state.city = user_info[st.session_state.username][2]
+        st.session_state.top = user_info[st.session_state.username][3]
+        st.session_state.bottom = user_info[st.session_state.username][4]
+        st.session_state.foot = user_info[st.session_state.username][5]
         st.title("메인 페이지")
         if "main_page" not in st.session_state:
             st.session_state.main_page = 0
@@ -163,7 +169,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             params["nx"] = x
             params["ny"] = y
             response = requests.get(url, params = params)
-            st.write(response.content)
+            st.write(response)
             
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"시간 : {st.session_state.time}")
