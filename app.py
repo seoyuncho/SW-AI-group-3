@@ -174,19 +174,10 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             base_date = str(now.year) + month + day
             params["base_date"] = base_date
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
-            params["x"] = x
-            params["y"] = y
+            params["nx"] = x
+            params["ny"] = y
             response = requests.get(url, params = params)
             st.write(response.content)
-            if st.session_state.do == "서울특별시":
-                params["nx"] = 127
-                params["ny"] = 37
-            if st.session_state.do == "서울특별시":
-                params["nx"] = 127
-                params["ny"] = 37
-            if st.session_state.do == "서울특별시":
-                params["nx"] = 127
-                params["ny"] = 37
             
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"시간 : {st.session_state.time}")
