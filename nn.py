@@ -46,8 +46,9 @@ else:
 
 print(response_content)
 
+sex = 'male'
 # 이미지 생성 프롬프트 (마른 체형)
-imggen_male = f"""An image of 20-year-old male.
+imggen_male = f"""An image of 20-year-old {sex}.
 /*instructions*/
 1. He is wearing a {Topcolor} {Tops} and {Bottomcolor} {Bottoms}, {Shoecolor} {Shoes}.
 2. He is standing vertically upright in a white background.
