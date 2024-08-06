@@ -78,8 +78,6 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.page = 0
         if "gender" not in st.session_state:
             st.session_state.gender = ""
-        if "race" not in st.session_state:
-            st.session_state.race = ""
         if "do" not in st.session_state:
             st.session_state.do = ""
         if "city" not in st.session_state:
@@ -92,19 +90,8 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.foot = 0
         if st.session_state.page == 0:
             st.session_state.gender = st.radio("성별을 선택해주세요",["**남성**", "**여성**"])
-            st.session_state.race = st.radio("인종을 선택해주세요",["**동양인**", "**서양인**"])
             st.session_state.do = st.selectbox("도를 선택해주세요",do_tuple)
             st.session_state.city = st.selectbox("시/군/구를 선택해주세요",do_city_dict[st.session_state.do])
-            # if st.session_state.do == "서울특별시":
-            #     st.session_state.city = st.selectbox("구를 선택해주세요",("강동구","강북구","강서구","관악구","광진구","구로구","금천구","노원구","도봉구","동대문구","동작구","마포구","서대문구","서초구","성동구","성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중구","중랑구",))
-            #     st.rerun()
-            # elif st.session_state.do == "인천광역시":
-            #     st.session_state.city == st.selectbox("군 또는 구를 선택해주세요",("중구","동구","미추홀구","연수구","남동구","부평구","계양구","서구","강화군","옹진군"))
-            #     st.rerun()
-            # elif st.session_state.do == "부산광역시":
-            #     st.session_state.city == st.selectbox("군 또는 구를 선택해주세요",("중구","서구","동구","영도구","부산진구","동래구","남구","북구","해운대구","사하구","금정구","강서구","연제구","수영구","사상구","기장군",))
-            #     st.rerun()
-                
             st.session_state.top = st.select_slider("상의 사이즈를 입력해주세요",options = [80,85,90,95,100,105,110,115,120,125,130])
             st.session_state.bottom = st.slider("하의 사이즈를 입력해주세요", 24, 35)
             st.session_state.foot = st.select_slider("발 사이즈를 입력해주세요", options = [230,235,240,245,250,255,260,265,270,275,280,285])
@@ -116,14 +103,13 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
         if st.session_state.page == 1: # 입력한 정보 확인 페이지
             st.write(f"{st.session_state.username}님의 정보")
             st.write(f"성별 : {st.session_state.gender}")
-            st.write(f"인종 : {st.session_state.race}")
             st.write(f"거주지 : {st.session_state.do}, {st.session_state.city}")
             st.write(f"상의 사이즈 : {st.session_state.top}")
             st.write(f"하의 사이즈 : {st.session_state.bottom}")
             st.write(f"발 사이즈 : {st.session_state.foot}")
             st.write("입력한 내용이 확실합니까?")
             if st.button("예"):
-                user_info[f"{st.session_state.username}"] = [st.session_state.gender,st.session_state.race,st.session_state.do, st.session_state.city,st.session_state.top,st.session_state.bottom,st.session_state.foot]
+                user_info[f"{st.session_state.username}"] = [st.session_state.gender,st.session_state.do, st.session_state.city,st.session_state.top,st.session_state.bottom,st.session_state.foot]
                 new_text = str(user_info)
                 with open('./user_info.txt','w',encoding='UTF-8') as f:
                     f.write(new_text)
