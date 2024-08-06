@@ -86,8 +86,7 @@ if st.session_state.openai_api_key:
             print(f"Failed to download image. Status code: {response.status_code}")
 
     # 이미지 다운로드 경로 설정
-    #save_path = '/Users/apple/Desktop/projectpicutre/finalimg.png'
-    save_path = '/finalimg.png'
+    save_path = '/Users/apple/Desktop/projectpicutre/finalimg.png'
 
     # 이미지 다운로드 실행
     #download_image(image_url_male, save_path)
