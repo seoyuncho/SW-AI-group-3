@@ -1,6 +1,11 @@
 import streamlit as st
 from openai import OpenAI
 import ast
+import requests
+
+url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0'
+params = {'serviceKey':'MjwzsGnby0UOkBp9eGkr4Jhzy7IO3vOyrQRvCHB%2BEwsZeNzKYHXFVAavYiLExcmp%2BJ9h88jXnadALImgUiCWrQ%3D%3D', 'pageNo' : '1','numOfRows' : '1000','dataType' : 'XML','base_date':'','nx':'','ny':''}
+
 
 with open('./user_account.txt','r',encoding='UTF-8') as f:
     user_account = ast.literal_eval(f.read()) #계정 정보
@@ -30,7 +35,7 @@ if 'add_cloths' not in st.session_state:
     st.session_state.add_cloths = False
 
 if not st.session_state.logged_in: # 로그인 화면
-    st.title("코디 추천 앱 demo")
+    st.title("오늘 뭐 입지?")
 
     openai_api_key = st.text_input("OpenAI API Key", type="password")
     username = st.text_input("아이디")
@@ -50,11 +55,11 @@ if not st.session_state.logged_in: # 로그인 화면
 
 if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
     is_first = True
-    openai_api_key =""
-    for key, value in st.session_state.items():
-        if key == "openai_api_key": openai_api_key = value
+    #openai_api_key =""
+    #for key, value in st.session_state.items():
+    #    if key == "openai_api_key": openai_api_key = value
 
-    client = OpenAI(api_key=openai_api_key)
+    client = OpenAI(api_key=st.session_state.openai_api_key)
     for key, value in user_is_first.items():
         if  key == st.session_state['username']: st.session_state.is_first = value
     if st.session_state.is_first: # 첫 방문 시 사전 정보 입력 페이지로 이동
@@ -74,6 +79,17 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
         if st.session_state.page == 0:
             st.session_state.gender = st.radio("성별을 선택해주세요",["**남성**", "**여성**"])
             st.session_state.race = st.radio("인종을 선택해주세요",["**동양인**", "**서양인**"])
+            if "city" not in st.session_state:
+                st.session_state.city = ""
+            st.session_state.city = st.selectbox("시를 선택해주세요",("서울특별시", "인천광역시", "부산광역시"))
+            if st.session_state.city == "":
+                st.session_state.district = st.selectbox("구를 선택해주세요")
+            elif st.session_state.city == "서울특별시":
+                st.session_state.district = st.selectbox("구를 선택해주세요",("강동구","강북구","강서구","관악구","광진구","구로구","금천구","노원구","도봉구","동대문구","동작구","마포구","서대문구","서초구","성동구","성북구","송파구","양천구","영등포구","용산구","은평구","종로구","중구","중랑구",))
+            elif st.session_state.city == "인천광역시":
+                st.session_state.district == st.selectbox("군 또는 구를 선택해주세요",("중구","동구","미추홀구","연수구","남동구","부평구","계양구","서구","강화군","옹진군"))
+            elif st.session_state.city == "부산광역시":
+                st.session_state.district == st.selectbox("군 또는 구를 선택해주세요",("중구","서구","동구","영도구","부산진구","동래구","남구","북구","해운대구","사하구","금정구","강서구","연제구","수영구","사상구","기장군",))
             st.session_state.top = st.select_slider("상의 사이즈를 입력해주세요",options = [80,85,90,95,100,105,110,115,120,125,130])
             st.session_state.bottom = st.slider("하의 사이즈를 입력해주세요", 24, 35)
             st.session_state.foot = st.select_slider("발 사이즈를 입력해주세요", options = [230,235,240,245,250,255,260,265,270,275,280,285])
@@ -113,9 +129,6 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             if st.button("아니오"):
                 st.rerun()
 
-        if st.session_state.page == 3:
-            st.write("옷 정보 입력하는 화면")
-            st.write("추후 구현 예정")
     elif st.session_state.add_cloths == True:
         st.write("옷 정보 입력하는 화면")
         st.write("추후 구현 예정")
@@ -126,7 +139,6 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.main_page = 0
         if st.session_state.main_page == 0:
             st.session_state.outing = st.selectbox("오늘은 무슨 일로 외출하시나요?",("가족 모임", "친구들 모임 or 동창회", "생일파티", "데이트", "학교", "아르바이트"))
-            st.session_state.where = st.text_input("목적지를 알려주세요!")
             st.session_state.time = st.time_input("시간 선택")
             st.session_state.item = st.text_input("착용하고 싶은 아이템이 있나요?")
             if st.button("옷 추천"):
@@ -137,6 +149,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
                 st.rerun()
         
         if st.session_state.main_page == 1:
+
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"목적지 : {st.session_state.where}")
             st.write(f"시간 : {st.session_state.time}")
