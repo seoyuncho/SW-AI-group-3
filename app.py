@@ -165,9 +165,9 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             yesterday = today - timedelta(days=1)
             month = ""
             day = ""
-            if len(str(today.month)) == 1: month = "0" + str(today.month)
-            if len(str(today.day)) == 1: day = "0" + str(today.day)
-            base_date = str(today.year) + month + day
+            if len(str(yesterday.month)) == 1: month = "0" + str(yesterday.month)
+            if len(str(yesterday.day)) == 1: day = "0" + str(yesterday.day)
+            base_date = str(yesterday.year) + month + day
             print(base_date)
             params["base_date"] = base_date
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
