@@ -3,6 +3,7 @@ from openai import OpenAI
 import ast
 import requests
 import datetime
+from datetime import timedelta
 import pandas as pd
 import json
 
@@ -160,17 +161,18 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
                 st.rerun()
         
         if st.session_state.main_page == 1:
-            now = datetime.datetime.now()
+            today = datetime.date.today()
+            yesterday = today - timedelta(days=1)
             month = ""
             day = ""
-            if len(str(now.month)) == 1: month = "0" + str(now.month)
-            if len(str(now.day)) == 1: day = "0" + str(now.day)
-            base_date = str(now.year) + month + day
+            if len(str(yesterday.month)) == 1: month = "0" + str(yesterday.month)
+            if len(str(yesterday.day)) == 1: day = "0" + str(yesterday.day)
+            base_date = str(yesterday.year) + month + day
             params["base_date"] = base_date
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
             params["nx"] = x
             params["ny"] = y
-            url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=60&pageNo=1&dataType=json&base_date={base_date}&base_time=0600&nx={x}&ny={y}"
+            url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=60&pageNo=1&dataType=json&base_date={base_date}&base_time=2300&nx={x}&ny={y}"
             response = requests.get(url, verify=False)
             res = json.loads(response.text)
             st.write(res)
