@@ -90,4 +90,4 @@ if st.session_state.openai_api_key:
     save_path = '/finalimg.png'
 
     # 이미지 다운로드 실행
-    download_image(image_url_male, save_path)
+    #download_image(image_url_male, save_path)
