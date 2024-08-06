@@ -4,9 +4,11 @@ import ast
 import requests
 import datetime
 import pandas as pd
+import json
 
 url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0'
-params = {'serviceKey':'MjwzsGnby0UOkBp9eGkr4Jhzy7IO3vOyrQRvCHB%2BEwsZeNzKYHXFVAavYiLExcmp%2BJ9h88jXnadALImgUiCWrQ%3D%3D', 'pageNo' : '1','numOfRows' : '1000','dataType' : 'XML','base_date':'','nx':'','ny':''}
+serviceKey = 'MjwzsGnby0UOkBp9eGkr4Jhzy7IO3vOyrQRvCHB%2BEwsZeNzKYHXFVAavYiLExcmp%2BJ9h88jXnadALImgUiCWrQ%3D%3D'
+params = {'serviceKey':serviceKey, 'pageNo' : '1','numOfRows' : '1000','dataType' : 'XML','base_date':'','nx':'','ny':''}
 
 
 def get_coordinates(do, city):
@@ -168,8 +170,10 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
             params["nx"] = x
             params["ny"] = y
-            response = requests.get(url, params = params)
-            st.write(response)
+            url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&numOfRows=60&pageNo=1&dataType=json&base_date={base_date}&base_time=0600&nx={nx}&ny={ny}"
+            response = requests.get(url, verify=False)
+            res = json.loads(response.text)
+            st.write(res)
             
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"시간 : {st.session_state.time}")
