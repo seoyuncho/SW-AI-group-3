@@ -51,7 +51,7 @@ if st.session_state.openai_api_key:
 
     print(response_content)
 
-    sex = 'male'
+    sex = 'female'
     # 이미지 생성 프롬프트 (마른 체형)
     imggen_male = f"""An image of 20-year-old {sex}.
     /*instructions*/
