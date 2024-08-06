@@ -173,9 +173,10 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
             params["nx"] = x
             params["ny"] = y
-            url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&pageNo=1&numOfRows=1000&dataType=json&base_date={base_date}&base_time=0200&nx={x}&ny={y}"
+            url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&pageNo=1&numOfRows=1000&dataType=json&base_date={base_date}&base_time=2300&nx={x}&ny={y}"
             response = requests.get(url, verify=False)
             res = response.json()
+            print(res)
             st.write(res)
             
             st.write(f"외출 목적 : {st.session_state.outing}")
