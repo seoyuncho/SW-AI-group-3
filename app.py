@@ -158,10 +158,13 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
 
         st.session_state.cloths = st.selectbox("옷 구분",("상의","하의","신발"))
         if st.session_state.cloths == "상의":
+            st.session_state.cloths == "Tops"
             st.session_state.types = st.selectbox("상의 종류",("반팔","긴팔","니트","셔츠","면티"))
         elif st.session_state.cloths == "하의":
+            st.session_state.cloths == "Bottoms"
             st.session_state.types = st.selectbox("하의 종류",("반바지","긴바지","5부 바지"))
         elif st.session_state.cloths == "신발":
+            st.session_state.cloths == "Shoes"
             st.session_state.types = st.selectbox("신발 구분",("운동화","로퍼","부츠","슬리퍼"))
         st.session_state.color = st.selectbox("색상",("흰색","검은색","회색","네이비","베이지","카키","빨간색","분홍색","주황색","노란색","초록색","하늘색","파란색","보라색"))
 
@@ -191,7 +194,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.outing = st.text_input("오늘은 무슨 일로 외출하시나요?")
             time_options = [time(hour, 0) for hour in range(24)]
             time = st.selectbox("시간 선택", time_options, format_func=lambda t: t.strftime('%H:%M'))
-            st.session_state.time = f'{str(time)[0:2]}{str(time)[3:5]}'
+            st.session_state.time = f'{str(time)[0:2]}{str(time)[3:5]}' 
 
             if st.button("옷 추천"):
                 st.session_state.main_page = 1
@@ -209,8 +212,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             if len(str(yesterday.day)) == 1: day = "0" + str(yesterday.day)
             base_date = str(yesterday.year) + month + day
             fcst_date = str(today).replace('-','')
-            fcst_time = str(st.session_state.time).replace(":","")[:2] + "00"
-
+            fcst_time = st.session_state.time
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
 
             url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey={serviceKey}&pageNo=1&numOfRows=1000&dataType=json&base_date={base_date}&base_time=2300&nx={x}&ny={y}"
@@ -219,12 +221,12 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             # st.write(json_data)
 
             # 1시간 기온 불러오기
-            tmp_value = get_fcst_value(json_data, fcst_date, fcst_time, 'TMP')
-            st.write(f"Forecast Value (TMP): {tmp_value}")
+            st.session_state.tmp_value = get_fcst_value(json_data, fcst_date, fcst_time, 'TMP')
+            st.write(f"Forecast Value (TMP): {st.session_state.tmp_value}")
             # 강수확률 불러오기
-            pop_value = get_fcst_value(json_data, fcst_date, fcst_time, 'POP')
-            st.write(f"Forecast Value (POP): {pop_value}")
-
+            st.session_state.pop_value = get_fcst_value(json_data, fcst_date, fcst_time, 'POP')
+            st.write(f"Forecast Value (POP): {st.session_state.pop_value}")
+            st.session_state.gender = user_info[st.session_state.username][0]
+            st.session_state.closet = user_info_optional[st.session_state.username]
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"시간 : {st.session_state.time}")
-            st.write("\n추후 구현 예정")
