@@ -135,8 +135,45 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
                 st.rerun()
 
     elif st.session_state.add_cloths == True:
-        st.write("옷 정보 입력하는 화면")
-        st.write("추후 구현 예정")
+        st.title("옷장 정보 입력")
+        if "cloths" not in st.session_state:
+            st.session_state.cloths = ""
+        if "types" not in st.session_state:
+            st.session_state.types = ""
+        if "color" not in st.session_state:
+            st.session_state.color = ""
+        for key, value in user_info_optional:
+            if key == st.session_state.username:
+                count = 0
+                for cloths, types, color in user_info_optional[key]:
+                    count += 1
+                    st.write(f"옷 정보 {count}")
+                    st.write(f"{cloths}")
+                    st.write(f"{types}")
+                    st.write(f"{color}")
+                    if st.button("삭제"):
+                        user_info_optional[st.session_state.username].remove([cloths,types,color])
+                        new_text = str(user_info_optional)
+                        with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
+                            f.write(new_text)
+                        st.rerun()
+
+        st.session_state.cloths = st.selectbox("옷 구분",("상의","하의","신발"))
+        if st.session_state.cloths == "상의":
+            st.session_state.types = st.selectbox("상의 종류",("반팔","긴팔","니트","셔츠","면티"))
+        elif st.session_state.cloths == "하의":
+            st.session_state.types = st.selectbox("하의 종류",("반바지","긴바지","5부 바지"))
+        elif st.session_state.cloths == "신발":
+            st.session_state.types = st.selectbox("신발 구분",("운동화","로퍼","부츠","슬리퍼"))
+        st.session_state.color = st.selectbox("색상",("흰색","검은색","회색","네이비","베이지","카키","빨간색","분홍색","주황색","노란색","초록색","하늘색","파란색","보라색"))
+
+        if st.button("추가"):
+            user_info_optional[st.session_state.username].append([st.session_state.cloths,st.session_state.types,st.session_state.color])
+            new_text = str(user_info_optional)
+            with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
+                f.write(new_text)
+            st.rerun()
+            
         
     else: # 재방문 시 메인 페이지로 이동
         st.session_state.gender = user_info[st.session_state.username][0]
@@ -176,7 +213,6 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&pageNo=1&numOfRows=1000&dataType=json&base_date={base_date}&base_time=2300&nx={x}&ny={y}"
             response = requests.get(url, verify=False)
             res = response.json()
-            print(res)
             st.write(res)
             
             st.write(f"외출 목적 : {st.session_state.outing}")
