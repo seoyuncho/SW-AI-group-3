@@ -209,7 +209,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             if len(str(yesterday.day)) == 1: day = "0" + str(yesterday.day)
             base_date = str(yesterday.year) + month + day
             fcst_date = str(today).replace('-','')
-            fcst_time = str(st.session_state.time).replace(":","")[:2] + "00"
+            fcst_time =  st.session_state.time
 
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
 
