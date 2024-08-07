@@ -27,8 +27,6 @@ with open('./user_info.txt','r',encoding='UTF-8') as f:
 with open('./user_info_optional.txt','r',encoding='UTF-8') as f:
     user_info_optional = ast.literal_eval(f.read())#[[옷 구분1, 옷 종류1, 색상1], [옷 구분2, 옷 종류2, 색상2], ...]
 
-st.write(user_info_optional)
-
 def login(username, password):
     if username in user_account and user_account[username] == password:
         return True
@@ -144,7 +142,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.types = ""
         if "color" not in st.session_state:
             st.session_state.color = ""
-        for key, value in user_info_optional:
+        for key, value in user_info_optional.items():
             if key == st.session_state.username:
                 count = 0
                 for cloths, types, color in user_info_optional[key]:
