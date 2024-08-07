@@ -151,7 +151,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
                     st.write(f"{cloths}")
                     st.write(f"{types}")
                     st.write(f"{color}")
-                    if st.button("삭제"):
+                    if st.button("삭제",key=f"button{count}"):
                         user_info_optional[st.session_state.username].remove([cloths,types,color])
                         new_text = str(user_info_optional)
                         with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
