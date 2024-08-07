@@ -222,11 +222,14 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
 
             # 1시간 기온 불러오기
             st.session_state.tmp_value = get_fcst_value(json_data, fcst_date, fcst_time, 'TMP')
-            st.write(f"Forecast Value (TMP): {st.session_state.tmp_value}")
             # 강수확률 불러오기
             st.session_state.pop_value = get_fcst_value(json_data, fcst_date, fcst_time, 'POP')
-            st.write(f"Forecast Value (POP): {st.session_state.pop_value}")
             st.session_state.gender = user_info[st.session_state.username][0]
             st.session_state.closet = user_info_optional[st.session_state.username]
+            st.write(f"Forecast Value (TMP): {st.session_state.tmp_value}")
+            st.write(f"Forecast Value (POP): {st.session_state.pop_value}")
+            st.write(f"성별 : {st.session_state.gender}")
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"시간 : {st.session_state.time}")
+            st.write(f"옷장 정보 : {st.session_state.closet}")
+
