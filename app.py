@@ -146,7 +146,9 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
                 for cloths, types, color in user_info_optional[key]:
                     count += 1
                     st.write(f"## 옷 정보 {count}")
-                    st.write(f"{cloths}")
+                    if cloths == "Tops": st.write(f"상의")
+                    elif cloths == "Bottoms": st.write(f"하의")
+                    elif cloths == "Shoes": st.write(f"신발")
                     st.write(f"{types}")
                     st.write(f"{color}")
                     if st.button("삭제",key=f"button{count}"):
@@ -158,14 +160,14 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
 
         st.session_state.cloths = st.selectbox("옷 구분",("상의","하의","신발"))
         if st.session_state.cloths == "상의":
-            st.session_state.cloths == "Tops"
-            st.session_state.types = st.selectbox("상의 종류",("반팔","긴팔","니트","셔츠","면티"))
+            st.session_state.cloths = "Tops"
+            st.session_state.types = st.selectbox("상의 종류",("반팔","긴팔","니트","셔츠","맨투맨"))
         elif st.session_state.cloths == "하의":
-            st.session_state.cloths == "Bottoms"
-            st.session_state.types = st.selectbox("하의 종류",("반바지","긴바지","5부 바지"))
+            st.session_state.cloths = "Bottoms"
+            st.session_state.types = st.selectbox("하의 종류",("반바지","긴바지","청바지","치마","슬랙스"))
         elif st.session_state.cloths == "신발":
-            st.session_state.cloths == "Shoes"
-            st.session_state.types = st.selectbox("신발 구분",("운동화","로퍼","부츠","슬리퍼"))
+            st.session_state.cloths = "Shoes"
+            st.session_state.types = st.selectbox("신발 구분",("운동화","로퍼","부츠","슬리퍼","구두"))
         st.session_state.color = st.selectbox("색상",("흰색","검은색","회색","네이비","베이지","카키","빨간색","분홍색","주황색","노란색","초록색","하늘색","파란색","보라색"))
 
         if st.button("추가"):
