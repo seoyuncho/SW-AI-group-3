@@ -16,10 +16,10 @@ def get_coordinates(do, city):
     y = filtered_df.iloc[0]['y']
     return x, y
 
-def get_fcst_value(json_data, fcst_time, category):
+def get_fcst_value(json_data, fcst_date, fcst_time, category):
     items = json_data['response']['body']['items']['item']
     for item in items:
-        if item['fcstTime'] == fcst_time and item['category'] == category:
+        if item['fcstDate'] == fcst_date and item['fcstTime'] == fcst_time and item['category'] == category:
             return item['fcstValue']
     return None
 
@@ -207,9 +207,8 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             if len(str(yesterday.month)) == 1: month = "0" + str(yesterday.month)
             if len(str(yesterday.day)) == 1: day = "0" + str(yesterday.day)
             base_date = str(yesterday.year) + month + day
-            print(base_date)
+            fcst_date = str(today).replace('-','')
             fcst_time = str(st.session_state.time).replace(":","")[:2] + "00"
-            print(fcst_time)
 
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
 
@@ -219,13 +218,12 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             # st.write(json_data)
 
             # 1시간 기온 불러오기
-            tmp_value = get_fcst_value(json_data, fcst_time, 'TMP')
+            tmp_value = get_fcst_value(json_data, fcst_date, fcst_time, 'TMP')
             st.write(f"Forecast Value (TMP): {tmp_value}")
             # 강수확률 불러오기
-            pop_value = get_fcst_value(json_data, fcst_time, 'POP')
+            pop_value = get_fcst_value(json_data, fcst_date, fcst_time, 'POP')
             st.write(f"Forecast Value (POP): {pop_value}")
 
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"시간 : {st.session_state.time}")
             st.write("\n추후 구현 예정")
-
