@@ -147,7 +147,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
                 count = 0
                 for cloths, types, color in user_info_optional[key]:
                     count += 1
-                    st.write(f"옷 정보 {count}")
+                    st.write(f"## 옷 정보 {count}")
                     st.write(f"{cloths}")
                     st.write(f"{types}")
                     st.write(f"{color}")
