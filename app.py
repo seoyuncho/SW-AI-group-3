@@ -27,6 +27,8 @@ with open('./user_info.txt','r',encoding='UTF-8') as f:
 with open('./user_info_optional.txt','r',encoding='UTF-8') as f:
     user_info_optional = ast.literal_eval(f.read())#[[옷 구분1, 옷 종류1, 색상1], [옷 구분2, 옷 종류2, 색상2], ...]
 
+st.write(user_info_optional)
+
 def login(username, password):
     if username in user_account and user_account[username] == password:
         return True
