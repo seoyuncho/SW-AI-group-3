@@ -7,9 +7,8 @@ from datetime import timedelta
 import pandas as pd
 import json
 
-url = 'http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0'
 serviceKey = 'MjwzsGnby0UOkBp9eGkr4Jhzy7IO3vOyrQRvCHB%2BEwsZeNzKYHXFVAavYiLExcmp%2BJ9h88jXnadALImgUiCWrQ%3D%3D'
-params = {'serviceKey':serviceKey, 'pageNo' : '1','numOfRows' : '1000','dataType' : 'XML','base_date':'','nx':'','ny':''}
+#params = {'serviceKey':serviceKey, 'pageNo' : '1','numOfRows' : '1000','dataType' : 'XML','base_date':'','nx':'','ny':''}
 
 
 def get_coordinates(do, city):
@@ -85,19 +84,14 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.do = ""
         if "city" not in st.session_state:
             st.session_state.city = ""
-        if "top" not in st.session_state:
-            st.session_state.top = 0
-        if "bottom" not in st.session_state:
-            st.session_state.bottom = 0
-        if "foot" not in st.session_state:
-            st.session_state.foot = 0
         if st.session_state.page == 0:
             st.session_state.gender = st.radio("성별을 선택해주세요",["**남성**", "**여성**"])
             st.session_state.do = st.selectbox("도를 선택해주세요",do_tuple)
             st.session_state.city = st.selectbox("시/군/구를 선택해주세요",do_city_dict[st.session_state.do])
-            st.session_state.top = st.select_slider("상의 사이즈를 입력해주세요",options = [80,85,90,95,100,105,110,115,120,125,130])
-            st.session_state.bottom = st.slider("하의 사이즈를 입력해주세요", 24, 35)
-            st.session_state.foot = st.select_slider("발 사이즈를 입력해주세요", options = [230,235,240,245,250,255,260,265,270,275,280,285])
+            # 상체, 하체, 발 사이즈는 일단 사용 안 할 예정
+            # st.session_state.top = st.select_slider("상의 사이즈를 입력해주세요",options = [80,85,90,95,100,105,110,115,120,125,130])
+            # st.session_state.bottom = st.slider("하의 사이즈를 입력해주세요", 24, 35)
+            # st.session_state.foot = st.select_slider("발 사이즈를 입력해주세요", options = [230,235,240,245,250,255,260,265,270,275,280,285])
 
             if st.button("다음"):
                 st.session_state.page = 1
@@ -107,12 +101,9 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.write(f"{st.session_state.username}님의 정보")
             st.write(f"성별 : {st.session_state.gender}")
             st.write(f"거주지 : {st.session_state.do}, {st.session_state.city}")
-            st.write(f"상의 사이즈 : {st.session_state.top}")
-            st.write(f"하의 사이즈 : {st.session_state.bottom}")
-            st.write(f"발 사이즈 : {st.session_state.foot}")
             st.write("입력한 내용이 확실합니까?")
             if st.button("예"):
-                user_info[f"{st.session_state.username}"] = [st.session_state.gender,st.session_state.do, st.session_state.city,st.session_state.top,st.session_state.bottom,st.session_state.foot]
+                user_info[f"{st.session_state.username}"] = [st.session_state.gender,st.session_state.do, st.session_state.city]
                 new_text = str(user_info)
                 with open('./user_info.txt','w',encoding='UTF-8') as f:
                     f.write(new_text)
@@ -173,26 +164,29 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
                 f.write(new_text)
             st.rerun()
+
+        if st.button("메인 페이지로"):
+            st.session_state.add_cloths = False
+            st.rerun()
             
         
     else: # 재방문 시 메인 페이지로 이동
         st.session_state.gender = user_info[st.session_state.username][0]
         st.session_state.do = user_info[st.session_state.username][1]
         st.session_state.city = user_info[st.session_state.username][2]
-        st.session_state.top = user_info[st.session_state.username][3]
-        st.session_state.bottom = user_info[st.session_state.username][4]
-        st.session_state.foot = user_info[st.session_state.username][5]
+        # st.session_state.top = user_info[st.session_state.username][3]
+        # st.session_state.bottom = user_info[st.session_state.username][4]
+        # st.session_state.foot = user_info[st.session_state.username][5]
         st.title("메인 페이지")
         if "main_page" not in st.session_state:
             st.session_state.main_page = 0
         if st.session_state.main_page == 0:
-            st.session_state.outing = st.selectbox("오늘은 무슨 일로 외출하시나요?",("가족 모임", "친구들 모임 or 동창회", "생일파티", "데이트", "학교", "아르바이트"))
-            st.session_state.date = st.date_input("날짜 선택",)
+            st.session_state.outing = st.text_input("오늘은 무슨 일로 외출하시나요?")
             st.session_state.time = st.time_input("시간 선택")
             if st.button("옷 추천"):
                 st.session_state.main_page = 1
                 st.rerun()
-            if st.button("옷 추가"):
+            if st.button("옷장 정보 추가"):
                 st.session_state.add_cloths = True
                 st.rerun()
         
@@ -205,17 +199,14 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             if len(str(yesterday.day)) == 1: day = "0" + str(yesterday.day)
             base_date = str(yesterday.year) + month + day
             print(base_date)
-            params["base_date"] = base_date
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
-            params["nx"] = x
-            params["ny"] = y
             url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey={serviceKey}&pageNo=1&numOfRows=1000&dataType=json&base_date={base_date}&base_time=2300&nx={x}&ny={y}"
             response = requests.get(url, verify=False)
             res = response.json()
             st.write(res)
+
+
         
-            st.write(f"외출 목적 : {st.session_state.outing}")
-            st.write(f"시간 : {st.session_state.time}")
-            st.write("\n추후 구현 예정")
+            
 
 
