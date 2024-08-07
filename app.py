@@ -187,9 +187,8 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.main_page = 0
         if st.session_state.main_page == 0:
             st.session_state.outing = st.selectbox("오늘은 무슨 일로 외출하시나요?",("가족 모임", "친구들 모임 or 동창회", "생일파티", "데이트", "학교", "아르바이트"))
-            st.session_state.date = st.date_input("날짜 선택")
+            st.session_state.date = st.date_input("날짜 선택",)
             st.session_state.time = st.time_input("시간 선택")
-            st.session_state.item = st.text_input("착용하고 싶은 아이템이 있나요?")
             if st.button("옷 추천"):
                 st.session_state.main_page = 1
                 st.rerun()
@@ -210,14 +209,13 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             x,y = get_coordinates(st.session_state.do, st.session_state.city)
             params["nx"] = x
             params["ny"] = y
-            url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey={serviceKey}&pageNo=1&numOfRows=1000&dataType=json&base_date={base_date}&base_time=2300&nx={x}&ny={y}"
+            url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey={serviceKey}&pageNo=1&numOfRows=1000&dataType=json&base_date={base_date}&base_time=2300&nx={x}&ny={y}"
             response = requests.get(url, verify=False)
             res = response.json()
             st.write(res)
-            
+        
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"시간 : {st.session_state.time}")
-            st.write(f"착용 아이템 : {st.session_state.item}")
             st.write("\n추후 구현 예정")
 
 
