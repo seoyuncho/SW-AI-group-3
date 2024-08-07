@@ -91,7 +91,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
         if "city" not in st.session_state:
             st.session_state.city = ""
         if st.session_state.page == 0:
-            st.session_state.gender = st.radio("성별을 선택해주세요",["**남성**", "**여성**"])
+            st.session_state.gender = st.radio("성별을 선택해주세요",["남성", "여성"])
             st.session_state.do = st.selectbox("도를 선택해주세요",do_tuple)
             st.session_state.city = st.selectbox("시/군/구를 선택해주세요",do_city_dict[st.session_state.do])
             # 상체, 하체, 발 사이즈는 일단 사용 안 할 예정
