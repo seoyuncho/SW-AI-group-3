@@ -191,7 +191,7 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.session_state.outing = st.text_input("오늘은 무슨 일로 외출하시나요?")
             time_options = [time(hour, 0) for hour in range(24)]
             time = st.selectbox("시간 선택", time_options, format_func=lambda t: t.strftime('%H:%M'))
-            st.session_state.time = f'{str(time)[0:2]}{str(time)[2:4]}'
+            st.session_state.time = f'{str(time)[0:2]}{str(time)[3:5]}'
 
             if st.button("옷 추천"):
                 st.session_state.main_page = 1
