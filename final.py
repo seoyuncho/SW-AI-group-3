@@ -390,9 +390,13 @@ if st.session_state.logged_in:
             # 이미지 생성 및 추천된 옷 정보 표시
             if st.button("이미지 생성 및 옷 추천 확인"):
                 with st.spinner('옷 추천 중...'):
-                    hs = 'He' if st.session_state.gender == 'male' else 'She'
+                    hs = 'He'
+                    pgender = 'male'
+                    if (st.session_state.gender == '여성'):
+                        hs = 'She'
+                        pgender = 'female'
 
-                    imggen_male = f"""An image of 20-year-old {st.session_state.gender}.
+                    imggen_male = f"""An image of 20-year-old {pgender}.
                     /*instructions*/
                     1. {hs} is wearing a {Topcolor} {Tops} and {Bottomcolor} {Bottoms}, {Shoecolor} {Shoes}.
                     2. {hs} is standing vertically upright in a white background.
