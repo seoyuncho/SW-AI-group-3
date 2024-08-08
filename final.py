@@ -105,15 +105,16 @@ if st.session_state.logged_in:
     client = OpenAI(api_key=st.session_state.openai_api_key)
     translator = GoogleTranslator(source='ko', target='en')
 
+    file_path = 'korea_administrative_division_latitude_longitude.xlsx' #시군구에 따른 x,y 좌표값 불러오기
+    df = pd.read_excel(file_path)
+    do_city_dict = df.groupby('do')['city'].apply(list).to_dict()
+    do_tuple = tuple(df['do'].unique())
+
     for key, value in user_is_first.items():
         if  key == st.session_state['username']:
             st.session_state.is_first = value
 
     if st.session_state.is_first:
-        file_path = 'korea_administrative_division_latitude_longitude.xlsx' #시군구에 따른 x,y 좌표값 불러오기
-        df = pd.read_excel(file_path)
-        do_city_dict = df.groupby('do')['city'].apply(list).to_dict()
-        do_tuple = tuple(df['do'].unique())
         st.title("사전 정보 입력")
         if "page" not in st.session_state:
             st.session_state.page = 0
