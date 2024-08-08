@@ -389,31 +389,32 @@ if st.session_state.logged_in:
 
             # 이미지 생성 및 추천된 옷 정보 표시
             if st.button("이미지 생성 및 옷 추천 확인"):
-                hs = 'He' if st.session_state.gender == 'male' else 'She'
+                with st.spinner('옷 추천 중...'):
+                    hs = 'He' if st.session_state.gender == 'male' else 'She'
 
-                imggen_male = f"""An image of 20-year-old {st.session_state.gender}.
-                /*instructions*/
-                1. {hs} is wearing a {Topcolor} {Tops} and {Bottomcolor} {Bottoms}, {Shoecolor} {Shoes}.
-                2. {hs} is standing vertically upright in a white background.
-                3. {hs} is in the center of this image.
-                4. The image must be full body view, from head to toe.
-                5. Just one person."""
+                    imggen_male = f"""An image of 20-year-old {st.session_state.gender}.
+                    /*instructions*/
+                    1. {hs} is wearing a {Topcolor} {Tops} and {Bottomcolor} {Bottoms}, {Shoecolor} {Shoes}.
+                    2. {hs} is standing vertically upright in a white background.
+                    3. {hs} is in the center of this image.
+                    4. The image must be full body view, from head to toe.
+                    5. Just one person."""
 
-                response_male = client.images.generate(
-                    model="dall-e-3",
-                    prompt=imggen_male,
-                    style='vivid',
-                    size="1024x1024",
-                    quality="hd",
-                    n=1
-                )
+                    response_male = client.images.generate(
+                        model="dall-e-3",
+                        prompt=imggen_male,
+                        style='vivid',
+                        size="1024x1024",
+                        quality="hd",
+                        n=1
+                    )
 
-                image_url_male = response_male.data[0].url
+                    image_url_male = response_male.data[0].url
 
-                st.session_state.image_url_male = image_url_male
-                st.session_state.recommendation = f"# 오늘 뭐 입지? 의 추천!\n\nTop: {Topcolor} {Tops}\nBottom: {Bottomcolor} {Bottoms}\nShoes: {Shoecolor} {Shoes}"
-                st.session_state.page = "result"
-                st.rerun()
+                    st.session_state.image_url_male = image_url_male
+                    st.session_state.recommendation = f"# 오늘 뭐 입지? 의 추천!\n\nTop: {Topcolor} {Tops}\nBottom: {Bottomcolor} {Bottoms}\nShoes: {Shoecolor} {Shoes}"
+                    st.session_state.page = "result"
+                    st.rerun()
 
             # 결과 페이지
             if "page" in st.session_state and st.session_state.page == "result":
