@@ -147,10 +147,6 @@ if st.session_state.logged_in:
                 new_text = str(user_info)
                 with open('./user_info.txt','w',encoding='UTF-8') as f:
                     f.write(new_text)
-                user_is_first[st.session_state.username] = False
-                new_text = str(user_is_first)
-                with open('./user_is_first.txt','w',encoding='UTF-8') as f:
-                    f.write(new_text)
                 st.session_state.page = 2
                 st.rerun()
             if st.button("아니오"):
@@ -158,6 +154,10 @@ if st.session_state.logged_in:
                 st.rerun()
 
         if st.session_state.page == 2: # 옷 정보 입력 선택 페이지
+            user_is_first[f"{st.session_state.username}"] = False
+            new_text = str(user_is_first)
+            with open('./user_is_first.txt','w',encoding='UTF-8') as f:
+                f.write(new_text)
             st.write("(선택) 가지고 있는 옷 정보를 입력하시겠습니까? (나중에 언제든지 다시 입력할 수 있습니다.)")
             if st.button("예"):
                 st.session_state.add_cloths = True
@@ -192,57 +192,7 @@ if st.session_state.logged_in:
                         new_text = str(user_info_optional)
                         with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
                             f.write(new_text)
-                        st.rerun()
-
-        # 옷 종류 변환을 위한 매핑 딕셔너리
-        clothes_mapping = {
-            "Tops": {
-                "반팔": "Short sleeves",
-                "긴팔": "Long sleeves",
-                "니트": "Knitwear",
-                "셔츠": "Shirts",
-                "맨투맨": "Sweatshirts",
-                "후드티": "Hoodie",
-                "폴로 셔츠": "Polo shirts"
-            },
-            "Bottoms": {
-                "반바지": "Shorts",
-                "긴바지": "Pants",
-                "청바지": "Jeans",
-                "치마": "Skirts",
-                "슬랙스": "Slacks"
-            },
-            "Shoes": {
-                "운동화": "Sneakers",
-                "로퍼": "Loafers",
-                "부츠": "Boots",
-                "슬리퍼": "Slippers",
-                "구두": "Formal Shoes"
-            }
-        }
-
-        material_mapping = {
-            "상의":{
-                "면" : "Cotton",
-                "폴리에스터" : "Polyester",
-                "나일론" : "Nylon",
-                "울" : "Wool",
-                "린넨" : "Linen"
-            },
-            "하의":{
-                "면" : "Cotton",
-                "폴리에스터" : "Polyester",
-                "데님" : "Denim",
-                "울" : "Wool",
-                "린넨" : "Linen"
-            },
-            "신발":{
-                "가죽": "Leather",
-                "캔버스": "Canvas",
-                "스웨이드": "Suede",
-                "메쉬": "Mesh"
-            }
-        }
+                        st.rerun()      
 
         # 옷 정보 입력 부분
         st.session_state.cloths = st.selectbox("옷 구분", ("상의", "하의", "신발"))
@@ -262,20 +212,16 @@ if st.session_state.logged_in:
         st.session_state.color = st.selectbox("색상", ("흰색", "검은색", "회색", "네이비", "베이지", "카키", "빨간색", "분홍색", "주황색", "노란색", "초록색", "하늘색", "파란색", "보라색"))
 
         # 선택된 값들을 영어로 변환하여 저장
-        selected_cloth_type = clothes_mapping[st.session_state.cloths][st.session_state.types]
 
         if st.button("추가"):
-            if st.session_state.username not in user_info_optional.keys():
-                user_info_optional[st.session_state.username] = [st.session_state.cloths, st.session_state.types, st.session_state.material,st.session_state.color]
-            else:
-                user_info_optional[st.session_state.username].append([st.session_state.cloths, st.session_state.types, st.session_state.material,st.session_state.color])
+            user_info_optional[st.session_state.username].append([st.session_state.cloths, st.session_state.types, st.session_state.material, st.session_state.color])
             new_text = str(user_info_optional)
             with open('./user_info_optional.txt', 'w', encoding='UTF-8') as f:
                 f.write(new_text)
             st.rerun()
 
 
-        if st.button("외출 정보 입력 페이지로"):
+        if st.button("메인 페이지로"):
             st.session_state.add_cloths = False
             st.rerun()
             
@@ -284,10 +230,7 @@ if st.session_state.logged_in:
         st.session_state.gender = user_info[st.session_state.username][0]
         st.session_state.do = user_info[st.session_state.username][1]
         st.session_state.city = user_info[st.session_state.username][2]
-        # st.session_state.top = user_info[st.session_state.username][3]
-        # st.session_state.bottom = user_info[st.session_state.username][4]
-        # st.session_state.foot = user_info[st.session_state.username][5]
-        st.title("외출 정보를 알려주세요!")
+        st.title("메인 페이지")
         if "main_page" not in st.session_state:
             st.session_state.main_page = 0
         if st.session_state.main_page == 0:
@@ -335,10 +278,7 @@ if st.session_state.logged_in:
             st.session_state.tmp_value = get_fcst_value(json_data, fcst_date, fcst_time, 'TMP')
             # 강수확률 불러오기
             st.session_state.pop_value = get_fcst_value(json_data, fcst_date, fcst_time, 'POP')
-            if st.session_state.username in user_info_optional:
-                st.session_state.closet = user_info_optional[st.session_state.username]
-            else:st.session_state.closet = "옷장 정보가 없습니다."
-            
+            st.session_state.closet = user_info_optional[st.session_state.username]
 
             st.write(f"Forecast Value (TMP): {st.session_state.tmp_value}")
             st.write(f"Forecast Value (POP): {st.session_state.pop_value}")
@@ -347,16 +287,72 @@ if st.session_state.logged_in:
             st.write(f"시간 : {st.session_state.time}")
             st.write(f"옷장 정보 : {st.session_state.closet}")
 
-            # 옷장 번역
+            # 옷장 번역 및 매핑
+
+            clothes_mapping = {
+                "Tops": {
+                    "반팔": "Short sleeves",
+                    "긴팔": "Long sleeves",
+                    "니트": "Knitwear",
+                    "셔츠": "Shirts",
+                    "맨투맨": "Sweatshirts",
+                    "후드티": "Hoodie",
+                    "폴로 셔츠": "Polo shirts"
+                },
+                "Bottoms": {
+                    "반바지": "Shorts",
+                    "긴바지": "Pants",
+                    "청바지": "Jeans",
+                    "치마": "Skirts",
+                    "슬랙스": "Slacks"
+                },
+                "Shoes": {
+                    "운동화": "Sneakers",
+                    "로퍼": "Loafers",
+                    "부츠": "Boots",
+                    "슬리퍼": "Slippers",
+                    "구두": "Formal Shoes"
+                }
+            }
+
+            material_mapping = {
+                "Tops":{
+                    "면" : "Cotton",
+                    "폴리에스터" : "Polyester",
+                    "나일론" : "Nylon",
+                    "울" : "Wool",
+                    "린넨" : "Linen"
+                },
+                "Bottoms":{
+                    "면" : "Cotton",
+                    "폴리에스터" : "Polyester",
+                    "데님" : "Denim",
+                    "울" : "Wool",
+                    "린넨" : "Linen"
+                },
+                "Shoes":{
+                    "가죽": "Leather",
+                    "캔버스": "Canvas",
+                    "스웨이드": "Suede",
+                    "메쉬": "Mesh"
+                }
+            }
+
             trans_closet = []
             for item in st.session_state.closet:
-                trans_item = [translator.translate(text) if not text.isascii() else text for text in item]
+                trans_item = [
+                    item[0],
+                    clothes_mapping[item[0]][item[1]],
+                    material_mapping[item[0]][item[2]],
+                    translator.translate(item[3]) if not item[3].isascii() else item[3]
+                ]
                 trans_closet.append(trans_item)
             
             sysmsg = f"""Looking at the given information that user gives, and recommend clothes that fit the situation.
             You must follow the answer format, never give any further explanation:
             You have these kind of clothes: {trans_closet}
-            Answer format example) Tops : T-shirt / Black, Bottoms : Jeans / Blue, Shoes : Sneakers / White"""
+            Answer format should be like this form: (Kind of clothes / Material of clothes / Color of clothes).
+            Answer format example) Tops : T-shirt / Cotton / Black, Bottoms : Pants / Denim / Blue, Shoes : Sneakers / Leather / White"""
 
             transout = translator.translate(st.session_state.outing)  
             response = client.chat.completions.create(
@@ -369,22 +365,25 @@ if st.session_state.logged_in:
 
             response_content = response.choices[0].message.content
 
-            tops_match = re.search(r"Tops\s*:\s*([^/]+)\s*/\s*([^,]+)", response_content)
-            bottoms_match = re.search(r"Bottoms\s*:\s*([^/]+)\s*/\s*([^,]+)", response_content)
-            shoes_match = re.search(r"Shoes\s*:\s*([^/]+)\s*/\s*([^,]+)", response_content)
+            tops_match = re.search(r"Tops\s*:\s*([^/]+)\s*/\s*([^/]+)\s*/\s*([^,]+)", response_content)
+            bottoms_match = re.search(r"Bottoms\s*:\s*([^/]+)\s*/\s*([^/]+)\s*/\s*([^,]+)", response_content)
+            shoes_match = re.search(r"Shoes\s*:\s*([^/]+)\s*/\s*([^/]+)\s*/\s*([^,]+)", response_content)
 
             if tops_match and bottoms_match and shoes_match:
                 Tops = tops_match.group(1).strip()
-                Topcolor = tops_match.group(2).strip()
+                Topmaterial = tops_match.group(2).strip()
+                Topcolor = tops_match.group(3).strip()
                 Bottoms = bottoms_match.group(1).strip()
-                Bottomcolor = bottoms_match.group(2).strip()
+                Bottommaterial = bottoms_match.group(2).strip()
+                Bottomcolor = bottoms_match.group(3).strip()
                 Shoes = shoes_match.group(1).strip()
-                Shoecolor = shoes_match.group(2).strip()
+                Shoematerial = shoes_match.group(2).strip()
+                Shoecolor = shoes_match.group(3).strip()
 
                 # 추출된 변수 출력
-                st.write(f"Tops: {Tops}, Color: {Topcolor}")
-                st.write(f"Bottoms: {Bottoms}, Color: {Bottomcolor}")
-                st.write(f"Shoes: {Shoes}, Color: {Shoecolor}")
+                st.write(f"Tops: {Tops}, Material: {Topmaterial}, Color: {Topcolor}")
+                st.write(f"Bottoms: {Bottoms}, Material: {Bottommaterial}, Color: {Bottomcolor}")
+                st.write(f"Shoes: {Shoes}, Material: {Shoematerial}, Color: {Shoecolor}")
             else:
                 st.write("Failed to extract one or more parts from the response.")
 
@@ -401,7 +400,7 @@ if st.session_state.logged_in:
 
                     imggen_male = f"""An image of 20-year-old {pgender}.
                     /*instructions*/
-                    1. {hs} is wearing a {Topcolor} {Tops} and {Bottomcolor} {Bottoms}, {Shoecolor} {Shoes}.
+                    1. {hs} is wearing a {Topcolor} {Topmaterial} {Tops} and {Bottomcolor} {Bottommaterial} {Bottoms}, {Shoecolor} {Shoematerial} {Shoes}.
                     2. {hs} is standing vertically upright in a white background.
                     3. {hs} is in the center of this image.
                     4. The image must be full body view, from head to toe.
@@ -419,7 +418,7 @@ if st.session_state.logged_in:
                     image_url_male = response_male.data[0].url
 
                     st.session_state.image_url_male = image_url_male
-                    st.session_state.recommendation = f"# 오늘 뭐 입지? 의 추천!\n\nTop: {Topcolor} {Tops}\nBottom: {Bottomcolor} {Bottoms}\nShoes: {Shoecolor} {Shoes}"
+                    st.session_state.recommendation = f"# 오늘 뭐 입지? 의 추천!\n\nTop: {Topcolor} {Topmaterial} {Tops}\nBottom: {Bottomcolor} {Bottommaterial} {Bottoms}\nShoes: {Shoecolor} {Shoematerial} {Shoes}"
                     st.session_state.page = "result"
                     st.rerun()
 
@@ -428,7 +427,7 @@ if st.session_state.logged_in:
                 st.image(st.session_state.image_url_male, caption="오늘 뭐 입지?")
                 st.markdown(st.session_state.recommendation.replace("\n", "  \n"))
 
-                 # 이미지 저장
+                # 이미지 저장
                 images_folder = './images'
                 saved_image_path = download_image(st.session_state.image_url_male, images_folder)
                 
@@ -445,3 +444,4 @@ if st.session_state.logged_in:
                         )
                 else:
                     st.error("이미지 저장에 실패했습니다.")
+
