@@ -179,21 +179,20 @@ if st.session_state.logged_in:
             if key == st.session_state.username:
                 count = 0
                 for match in user_info_optional[key]:
-                    for cloths, types, material, color in match:
-                        count += 1
-                        st.write(f"## 옷 정보 {count}")
-                        if cloths == "Tops": st.write(f"상의")
-                        elif cloths == "Bottoms": st.write(f"하의")
-                        elif cloths == "Shoes": st.write(f"신발")
-                        st.write(f"{types}")
-                        st.write(f"{material}")
-                        st.write(f"{color}")
-                        if st.button("삭제",key=f"button{count}"):
-                            user_info_optional[st.session_state.username].remove([cloths,types,material,color])
-                            new_text = str(user_info_optional)
-                            with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
-                                f.write(new_text)
-                            st.rerun()
+                    count += 1
+                    st.write(f"## 옷 정보 {count}")
+                    if match[0] == "Tops": st.write(f"상의")
+                    elif match[0] == "Bottoms": st.write(f"하의")
+                    elif match[0] == "Shoes": st.write(f"신발")
+                    st.write(match[1])
+                    st.write(match[2])
+                    st.write(match[3])
+                    if st.button("삭제",key=f"button{count}"):
+                        user_info_optional[st.session_state.username].remove([match[0],match[1],match[2],match[3]])
+                        new_text = str(user_info_optional)
+                        with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
+                            f.write(new_text)
+                        st.rerun()
 
         # 옷 종류 변환을 위한 매핑 딕셔너리
         clothes_mapping = {
