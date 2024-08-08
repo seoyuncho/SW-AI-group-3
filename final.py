@@ -233,10 +233,10 @@ if st.session_state.logged_in:
         st.session_state.gender = user_info[st.session_state.username][0]
         st.session_state.do = user_info[st.session_state.username][1]
         st.session_state.city = user_info[st.session_state.username][2]
-        st.title("외출 정보를 알려주세요!")
         if "main_page" not in st.session_state:
             st.session_state.main_page = 0
         if st.session_state.main_page == 0:
+            st.title("외출 정보를 알려주세요!")
             st.session_state.outing = st.text_input("오늘은 무슨 일로 외출하시나요?")
             time_options = [time(hour, 0) for hour in range(24)]
             time = st.selectbox("시간 선택", time_options, format_func=lambda t: t.strftime('%H:%M'))
@@ -249,7 +249,27 @@ if st.session_state.logged_in:
                 st.session_state.add_cloths = True
                 st.rerun()
         
+        enough_cloths = True
         if st.session_state.main_page == 1:
+            st.title("추천 코디 생성하는 중...")
+            empty_closet = "옷장 정보가 존재하지 않습니다."
+            if st.session_state.username not in user_info_optional.keys():
+                st.session_state.closet = empty_closet
+            else:
+                st.session_state.closet = user_info_optional[st.session_state.username]
+            if st.session_state.closet != empty_closet:
+                tops_count = 0
+                bottoms_count = 0
+                shoes_count = 0
+                for match in st.session_state.closet:
+                    if match[0] == "Tops": tops_count += 1
+                    elif match[0] == "Bottoms": bottoms_count += 1
+                    elif match[0] == "Shoes": shoes_count += 1
+                
+                if tops_count < 3 or bottoms_count < 3 or shoes_count < 2:
+                    enough_cloths = False
+                    st.write("옷장 정보가 충분하지 않기 때문에 무작위로 추천 코디를 생성합니다.")
+
             today = datetime.date.today()
             yesterday = today - timedelta(days=1)
             month = ""
@@ -264,6 +284,7 @@ if st.session_state.logged_in:
             url = f"http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey={serviceKey}&pageNo=1&numOfRows=1000&dataType=json&base_date={base_date}&base_time=2300&nx={x}&ny={y}"
             response = requests.get(url, verify=False)
             
+
             # 응답 상태 코드 확인 및 디버깅을 위한 출력
             if response.status_code == 200:
                 try:
@@ -281,84 +302,86 @@ if st.session_state.logged_in:
             st.session_state.tmp_value = get_fcst_value(json_data, fcst_date, fcst_time, 'TMP')
             # 강수확률 불러오기
             st.session_state.pop_value = get_fcst_value(json_data, fcst_date, fcst_time, 'POP')
-            if st.session_state.username not in user_info_optional.keys():
-                st.session_state.closet = "옷장 정보가 존재하지 않습니다."
-            else:
-                st.session_state.closet = user_info_optional[st.session_state.username]
 
-            st.write(f"Forecast Value (TMP): {st.session_state.tmp_value}")
-            st.write(f"Forecast Value (POP): {st.session_state.pop_value}")
-            st.write(f"성별 : {st.session_state.gender}")
-            st.write(f"외출 목적 : {st.session_state.outing}")
-            st.write(f"시간 : {st.session_state.time}")
-            st.write(f"옷장 정보 : {st.session_state.closet}")
+            # st.write(f"Forecast Value (TMP): {st.session_state.tmp_value}")
+            # st.write(f"Forecast Value (POP): {st.session_state.pop_value}")
+            # st.write(f"성별 : {st.session_state.gender}")
+            # st.write(f"외출 목적 : {st.session_state.outing}")
+            # st.write(f"시간 : {st.session_state.time}")
+            # st.write(f"옷장 정보 : {st.session_state.closet}")
 
             # 옷장 번역 및 매핑
-
-            clothes_mapping = {
-                "Tops": {
-                    "반팔": "Short sleeves",
-                    "긴팔": "Long sleeves",
-                    "니트": "Knitwear",
-                    "셔츠": "Shirts",
-                    "맨투맨": "Sweatshirts",
-                    "후드티": "Hoodie",
-                    "폴로 셔츠": "Polo shirts"
-                },
-                "Bottoms": {
-                    "반바지": "Shorts",
-                    "긴바지": "Pants",
-                    "청바지": "Jeans",
-                    "치마": "Skirts",
-                    "슬랙스": "Slacks"
-                },
-                "Shoes": {
-                    "운동화": "Sneakers",
-                    "로퍼": "Loafers",
-                    "부츠": "Boots",
-                    "슬리퍼": "Slippers",
-                    "구두": "Formal Shoes"
+            if enough_cloths == True:
+                clothes_mapping = {
+                    "Tops": {
+                        "반팔": "Short sleeves",
+                        "긴팔": "Long sleeves",
+                        "니트": "Knitwear",
+                        "셔츠": "Shirts",
+                        "맨투맨": "Sweatshirts",
+                        "후드티": "Hoodie",
+                        "폴로 셔츠": "Polo shirts"
+                    },
+                    "Bottoms": {
+                        "반바지": "Shorts",
+                        "긴바지": "Pants",
+                        "청바지": "Jeans",
+                        "치마": "Skirts",
+                        "슬랙스": "Slacks"
+                    },
+                    "Shoes": {
+                        "운동화": "Sneakers",
+                        "로퍼": "Loafers",
+                        "부츠": "Boots",
+                        "슬리퍼": "Slippers",
+                        "구두": "Formal Shoes"
+                    }
                 }
-            }
 
-            material_mapping = {
-                "Tops":{
-                    "면" : "Cotton",
-                    "폴리에스터" : "Polyester",
-                    "나일론" : "Nylon",
-                    "울" : "Wool",
-                    "린넨" : "Linen"
-                },
-                "Bottoms":{
-                    "면" : "Cotton",
-                    "폴리에스터" : "Polyester",
-                    "데님" : "Denim",
-                    "울" : "Wool",
-                    "린넨" : "Linen"
-                },
-                "Shoes":{
-                    "가죽": "Leather",
-                    "캔버스": "Canvas",
-                    "스웨이드": "Suede",
-                    "메쉬": "Mesh"
+                material_mapping = {
+                    "Tops":{
+                        "면" : "Cotton",
+                        "폴리에스터" : "Polyester",
+                        "나일론" : "Nylon",
+                        "울" : "Wool",
+                        "린넨" : "Linen"
+                    },
+                    "Bottoms":{
+                        "면" : "Cotton",
+                        "폴리에스터" : "Polyester",
+                        "데님" : "Denim",
+                        "울" : "Wool",
+                        "린넨" : "Linen"
+                    },
+                    "Shoes":{
+                        "가죽": "Leather",
+                        "캔버스": "Canvas",
+                        "스웨이드": "Suede",
+                        "메쉬": "Mesh"
+                    }
                 }
-            }
 
-            trans_closet = []
-            for item in st.session_state.closet:
-                trans_item = [
-                    item[0],
-                    clothes_mapping[item[0]][item[1]],
-                    material_mapping[item[0]][item[2]],
-                    translator.translate(item[3]) if not item[3].isascii() else item[3]
-                ]
-                trans_closet.append(trans_item)
-            
-            sysmsg = f"""Looking at the given information that user gives, and recommend clothes that fit the situation.
-            You must follow the answer format, never give any further explanation:
-            You have these kind of clothes: {trans_closet}
-            Answer format should be like this form: (Kind of clothes / Material of clothes / Color of clothes).
-            Answer format example) Tops : T-shirt / Cotton / Black, Bottoms : Pants / Denim / Blue, Shoes : Sneakers / Leather / White"""
+                trans_closet = []
+                for item in st.session_state.closet:
+                    trans_item = [
+                        item[0],
+                        clothes_mapping[item[0]][item[1]],
+                        material_mapping[item[0]][item[2]],
+                        translator.translate(item[3]) if not item[3].isascii() else item[3]
+                    ]
+                    trans_closet.append(trans_item)
+                
+                sysmsg = f"""Looking at the given information that user gives, and recommend clothes that fit the situation.
+                You must follow the answer format, never give any further explanation:
+                You have these kind of clothes: {trans_closet}
+                Answer format should be like this form: (Kind of clothes / Material of clothes / Color of clothes).
+                Answer format example) Tops : T-shirt / Cotton / Black, Bottoms : Pants / Denim / Blue, Shoes : Sneakers / Leather / White"""
+
+            else:
+                sysmsg = f"""Looking at the given information that user gives, and recommend clothes that fit the situation.
+                You must follow the answer format, never give any further explanation:
+                Answer format should be like this form: (Kind of clothes / Material of clothes / Color of clothes).
+                Answer format example) Tops : T-shirt / Cotton / Black, Bottoms : Pants / Denim / Blue, Shoes : Sneakers / Leather / White"""
 
             transout = translator.translate(st.session_state.outing)  
             response = client.chat.completions.create(
