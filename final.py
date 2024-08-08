@@ -265,7 +265,10 @@ if st.session_state.logged_in:
         selected_cloth_type = clothes_mapping[st.session_state.cloths][st.session_state.types]
 
         if st.button("추가"):
-            user_info_optional[st.session_state.username].append([st.session_state.cloths, st.session_state.types, st.session_state.material,st.session_state.color])
+            if st.session_state.username not in user_info_optional.keys():
+                user_info_optional[st.session_state.username] = [st.session_state.cloths, st.session_state.types, st.session_state.material,st.session_state.color]
+            else:
+                user_info_optional[st.session_state.username].append([st.session_state.cloths, st.session_state.types, st.session_state.material,st.session_state.color])
             new_text = str(user_info_optional)
             with open('./user_info_optional.txt', 'w', encoding='UTF-8') as f:
                 f.write(new_text)
