@@ -192,7 +192,7 @@ if st.session_state.logged_in:
                         new_text = str(user_info_optional)
                         with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
                             f.write(new_text)
-                        st.rerun()      
+                        st.rerun()
 
         # 옷 정보 입력 부분
         st.session_state.cloths = st.selectbox("옷 구분", ("상의", "하의", "신발"))
@@ -215,7 +215,7 @@ if st.session_state.logged_in:
 
         if st.button("추가"):
             if st.session_state.username not in user_info_optional.keys():
-                user_info_optional[st.session_state.username] = ([st.session_state.cloths, st.session_state.types, st.session_state.material, st.session_state.color])
+                user_info_optional[st.session_state.username] = [[st.session_state.cloths, st.session_state.types, st.session_state.material, st.session_state.color]]
             else:
                 user_info_optional[st.session_state.username].append([st.session_state.cloths, st.session_state.types, st.session_state.material, st.session_state.color])
             new_text = str(user_info_optional)
