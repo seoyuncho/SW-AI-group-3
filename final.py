@@ -281,7 +281,10 @@ if st.session_state.logged_in:
             st.session_state.tmp_value = get_fcst_value(json_data, fcst_date, fcst_time, 'TMP')
             # 강수확률 불러오기
             st.session_state.pop_value = get_fcst_value(json_data, fcst_date, fcst_time, 'POP')
-            st.session_state.closet = user_info_optional[st.session_state.username]
+            if st.session_state.username not in user_info_optional.keys():
+                st.session_state.closet = "옷장 정보가 존재하지 않습니다."
+            else:
+                st.session_state.closet = user_info_optional[st.session_state.username]
 
             st.write(f"Forecast Value (TMP): {st.session_state.tmp_value}")
             st.write(f"Forecast Value (POP): {st.session_state.pop_value}")
