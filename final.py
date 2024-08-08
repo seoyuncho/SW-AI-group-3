@@ -82,7 +82,7 @@ if 'add_cloths' not in st.session_state:
 
 # 로그인 화면
 if not st.session_state.logged_in:
-    st.title("오늘 뭐 입지?")
+    st.title("👕 오늘 뭐 입지?")
 
     openai_api_key = st.text_input("OpenAI API Key", type="password")
     username = st.text_input("아이디")
@@ -193,7 +193,7 @@ if st.session_state.logged_in:
 
         # 옷 종류 변환을 위한 매핑 딕셔너리
         clothes_mapping = {
-            "상의": {
+            "Tops": {
                 "반팔": "Short sleeves",
                 "긴팔": "Long sleeves",
                 "니트": "Knitwear",
@@ -202,14 +202,14 @@ if st.session_state.logged_in:
                 "후드티": "Hoodie",
                 "폴로 셔츠": "Polo shirts"
             },
-            "하의": {
+            "Bottoms": {
                 "반바지": "Shorts",
                 "긴바지": "Pants",
                 "청바지": "Jeans",
                 "치마": "Skirts",
                 "슬랙스": "Slacks"
             },
-            "신발": {
+            "Shoes": {
                 "운동화": "Sneakers",
                 "로퍼": "Loafers",
                 "부츠": "Boots",
