@@ -275,7 +275,7 @@ if st.session_state.logged_in:
             st.rerun()
 
 
-        if st.button("메인 페이지로"):
+        if st.button("외출 정보 입력 페이지로"):
             st.session_state.add_cloths = False
             st.rerun()
             
@@ -287,7 +287,7 @@ if st.session_state.logged_in:
         # st.session_state.top = user_info[st.session_state.username][3]
         # st.session_state.bottom = user_info[st.session_state.username][4]
         # st.session_state.foot = user_info[st.session_state.username][5]
-        st.title("메인 페이지")
+        st.title("외출 정보를 알려주세요!")
         if "main_page" not in st.session_state:
             st.session_state.main_page = 0
         if st.session_state.main_page == 0:
