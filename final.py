@@ -102,7 +102,6 @@ if not st.session_state.logged_in:
 
 # 로그인 성공 후
 if st.session_state.logged_in:
-    print(f"로그인 직후 : {st.session_state.add_cloths}")
     client = OpenAI(api_key=st.session_state.openai_api_key)
     translator = GoogleTranslator(source='ko', target='en')
 
@@ -137,7 +136,7 @@ if st.session_state.logged_in:
 
             if st.button("다음"):
                 st.session_state.page = 1
-                # st.rerun()
+                st.rerun()
         
         if st.session_state.page == 1: # 입력한 정보 확인 페이지
             st.write(f"{st.session_state.username}님의 정보")
@@ -149,6 +148,10 @@ if st.session_state.logged_in:
                 new_text = str(user_info)
                 with open('./user_info.txt','w',encoding='UTF-8') as f:
                     f.write(new_text)
+                user_is_first[f"{st.session_state.username}"] = False
+                new_text2 = str(user_is_first)
+                with open('./user_is_first.txt','w',encoding='UTF-8') as f:
+                    f.write(new_text2)
                 st.session_state.page = 2
                 st.rerun()
             if st.button("아니오"):
@@ -156,10 +159,6 @@ if st.session_state.logged_in:
                 st.rerun()
 
         if st.session_state.page == 2: # 옷 정보 입력 선택 페이지
-            user_is_first[f"{st.session_state.username}"] = False
-            new_text = str(user_is_first)
-            with open('./user_is_first.txt','w',encoding='UTF-8') as f:
-                f.write(new_text)
             st.write("(선택) 가지고 있는 옷 정보를 입력하시겠습니까? (나중에 언제든지 다시 입력할 수 있습니다.)")
             if st.button("예"):
                 st.session_state.add_cloths = True
@@ -233,7 +232,6 @@ if st.session_state.logged_in:
             
         
     else: # 재방문 시 메인 페이지로 이동
-        print(f"메인 페이지 : {st.session_state.add_cloths}")
         st.session_state.gender = user_info[st.session_state.username][0]
         st.session_state.do = user_info[st.session_state.username][1]
         st.session_state.city = user_info[st.session_state.username][2]
