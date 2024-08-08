@@ -93,8 +93,8 @@ if not st.session_state.logged_in:
     else:
         if login_button:
             if login(username, password):
-                st.session_state['logged_in'] = True
-                st.session_state['username'] = username
+                st.session_state.logged_in = True
+                st.session_state.username = username
                 st.session_state.openai_api_key = openai_api_key
                 st.rerun()
             else:
@@ -137,7 +137,7 @@ if st.session_state.logged_in:
 
             if st.button("다음"):
                 st.session_state.page = 1
-                st.rerun()
+                # st.rerun()
         
         if st.session_state.page == 1: # 입력한 정보 확인 페이지
             st.write(f"{st.session_state.username}님의 정보")
@@ -163,6 +163,7 @@ if st.session_state.logged_in:
             st.write("(선택) 가지고 있는 옷 정보를 입력하시겠습니까? (나중에 언제든지 다시 입력할 수 있습니다.)")
             if st.button("예"):
                 st.session_state.add_cloths = True
+                st.rerun()
             if st.button("아니오"):
                 st.rerun()
 
