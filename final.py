@@ -154,7 +154,7 @@ if st.session_state.logged_in:
                 st.rerun()
 
         if st.session_state.page == 2: # 옷 정보 입력 선택 페이지
-            user_is_first[f"{st.session_state.username}"] = False
+            user_is_first[st.session_state.username] = False
             new_text = str(user_is_first)
             with open('./user_is_first.txt','w',encoding='UTF-8') as f:
                 f.write(new_text)
