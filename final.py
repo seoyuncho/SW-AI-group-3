@@ -396,7 +396,7 @@ if st.session_state.logged_in:
             else:
                 sysmsg = f"""Looking at the given information that user gives, and recommend clothes that fit the situation.
                 You must follow the answer format, never give any further explanation:
-                Answer format should be like this form: (Kind of clothes / Material of clothes / Color of clothes).
+                Answer format should be like this form: (Tops : Kind of clothes / Material of clothes / Color of clothes, Bottoms : Kind of clothes / Material of clothes / Color of clothes, Shoes : Kind of shoes / Material of shoes / Color of shoes).
                 Answer format example) Tops : T-shirt / Cotton / Black, Bottoms : Pants / Denim / Blue, Shoes : Sneakers / Leather / White"""
 
             transout = translator.translate(st.session_state.outing)  
