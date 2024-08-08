@@ -147,6 +147,10 @@ if st.session_state.logged_in:
                 new_text = str(user_info)
                 with open('./user_info.txt','w',encoding='UTF-8') as f:
                     f.write(new_text)
+                user_is_first[st.session_state.username] = False
+                new_text = str(user_is_first)
+                with open('./user_is_first.txt','w',encoding='UTF-8') as f:
+                    f.write(new_text)
                 st.session_state.page = 2
                 st.rerun()
             if st.button("아니오"):
@@ -154,10 +158,6 @@ if st.session_state.logged_in:
                 st.rerun()
 
         if st.session_state.page == 2: # 옷 정보 입력 선택 페이지
-            user_is_first[st.session_state.username] = False
-            new_text = str(user_is_first)
-            with open('./user_is_first.txt','w',encoding='UTF-8') as f:
-                f.write(new_text)
             st.write("(선택) 가지고 있는 옷 정보를 입력하시겠습니까? (나중에 언제든지 다시 입력할 수 있습니다.)")
             if st.button("예"):
                 st.session_state.add_cloths = True
@@ -178,21 +178,22 @@ if st.session_state.logged_in:
         for key, value in user_info_optional.items():
             if key == st.session_state.username:
                 count = 0
-                for cloths, types, material, color in user_info_optional[key]:
-                    count += 1
-                    st.write(f"## 옷 정보 {count}")
-                    if cloths == "Tops": st.write(f"상의")
-                    elif cloths == "Bottoms": st.write(f"하의")
-                    elif cloths == "Shoes": st.write(f"신발")
-                    st.write(f"{types}")
-                    st.write(f"{material}")
-                    st.write(f"{color}")
-                    if st.button("삭제",key=f"button{count}"):
-                        user_info_optional[st.session_state.username].remove([cloths,types,material,color])
-                        new_text = str(user_info_optional)
-                        with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
-                            f.write(new_text)
-                        st.rerun()
+                for match in user_info_optional[key]:
+                    for cloths, types, material, color in match:
+                        count += 1
+                        st.write(f"## 옷 정보 {count}")
+                        if cloths == "Tops": st.write(f"상의")
+                        elif cloths == "Bottoms": st.write(f"하의")
+                        elif cloths == "Shoes": st.write(f"신발")
+                        st.write(f"{types}")
+                        st.write(f"{material}")
+                        st.write(f"{color}")
+                        if st.button("삭제",key=f"button{count}"):
+                            user_info_optional[st.session_state.username].remove([cloths,types,material,color])
+                            new_text = str(user_info_optional)
+                            with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
+                                f.write(new_text)
+                            st.rerun()
 
         # 옷 종류 변환을 위한 매핑 딕셔너리
         clothes_mapping = {
