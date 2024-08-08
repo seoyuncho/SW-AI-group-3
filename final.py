@@ -255,6 +255,7 @@ if st.session_state.logged_in:
             empty_closet = "옷장 정보가 존재하지 않습니다."
             if st.session_state.username not in user_info_optional.keys():
                 st.session_state.closet = empty_closet
+                enough_cloths = False
             else:
                 st.session_state.closet = user_info_optional[st.session_state.username]
             if st.session_state.closet != empty_closet:
