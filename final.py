@@ -252,8 +252,11 @@ if st.session_state.logged_in:
             st.session_state.time = f'{str(time)[0:2]}{str(time)[3:5]}' 
 
             if st.button("옷 추천"):
-                st.session_state.main_page = 1
-                st.rerun()
+                if len(st.session_state.outing) < 3:
+                    st.error("외출 목적은 최소 3자 이상 입력해주세요")
+                else:
+                    st.session_state.main_page = 1
+                    st.rerun()
             if st.button("옷장 정보 추가"):
                 st.session_state.add_cloths = True
                 st.rerun()
