@@ -9,6 +9,7 @@ import pandas as pd
 import json
 import re
 from deep_translator import GoogleTranslator
+import os
 
 # 기상청 API 키
 serviceKey = 'MjwzsGnby0UOkBp9eGkr4Jhzy7IO3vOyrQRvCHB%2BEwsZeNzKYHXFVAavYiLExcmp%2BJ9h88jXnadALImgUiCWrQ%3D%3D'
@@ -45,6 +46,27 @@ def login(username, password):
     else:
         return False
 
+# 이미지 다운로드 함수
+def download_image(image_url, folder_path):
+    # 폴더가 없으면 생성
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+    
+    # 현재 시간을 이용하여 유니크한 파일명 생성
+    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+    file_name = f"outfit_{timestamp}.png"
+    save_path = os.path.join(folder_path, file_name)
+    
+    response = requests.get(image_url)
+    if response.status_code == 200:
+        with open(save_path, 'wb') as f:
+            f.write(response.content)
+        print(f"Image successfully downloaded: {save_path}")
+        return save_path
+    else:
+        print(f"Failed to download image. Status code: {response.status_code}")
+        return None
+
 # 세션 상태 초기화
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
@@ -60,7 +82,7 @@ if 'add_cloths' not in st.session_state:
 
 # 로그인 화면
 if not st.session_state.logged_in:
-    st.title("오늘 뭐 입지?")
+    st.title("👕 오늘 뭐 입지?")
 
     openai_api_key = st.text_input("OpenAI API Key", type="password")
     username = st.text_input("아이디")
@@ -398,14 +420,20 @@ if st.session_state.logged_in:
                 st.image(st.session_state.image_url_male, caption="오늘 뭐 입지?")
                 st.markdown(st.session_state.recommendation.replace("\n", "  \n"))
 
-                def download_image(image_url, save_path):
-                    response = requests.get(image_url)
-                    if response.status_code == 200:
-                        with open(save_path, 'wb') as f:
-                            f.write(response.content)
-                        print(f"Image successfully downloaded: {save_path}")
-                    else:
-                        print(f"Failed to download image. Status code: {response.status_code}")
-
-                save_path = '/Users/apple/Desktop/projectpicutre/finalimg.png'
-                download_image(st.session_state.image_url_male, save_path)
+                 # 이미지 저장
+                images_folder = './images'
+                saved_image_path = download_image(st.session_state.image_url_male, images_folder)
+                
+                if saved_image_path:
+                    st.success(f"이미지가 성공적으로 저장되었습니다: {saved_image_path}")
+                    
+                    # 저장된 이미지 다운로드 버튼 추가
+                    with open(saved_image_path, "rb") as file:
+                        btn = st.download_button(
+                            label="코디 이미지 다운로드",
+                            data=file,
+                            file_name=os.path.basename(saved_image_path),
+                            mime="image/png"
+                        )
+                else:
+                    st.error("이미지 저장에 실패했습니다.")
