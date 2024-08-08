@@ -256,6 +256,8 @@ if st.session_state.logged_in:
             if st.session_state.username not in user_info_optional.keys():
                 st.session_state.closet = empty_closet
                 enough_cloths = False
+                st.write("옷장 정보가 충분하지 않기 때문에 무작위로 추천 코디를 생성합니다.")
+                st.write("(상의 3종류, 바지 3종류, 신발 2종류 이상부터 옷장 정보에서 추천 코디가 가능합니다)")
             else:
                 st.session_state.closet = user_info_optional[st.session_state.username]
             if st.session_state.closet != empty_closet:
@@ -270,6 +272,7 @@ if st.session_state.logged_in:
                 if tops_count < 3 or bottoms_count < 3 or shoes_count < 2:
                     enough_cloths = False
                     st.write("옷장 정보가 충분하지 않기 때문에 무작위로 추천 코디를 생성합니다.")
+                    st.write("(상의 3종류, 바지 3종류, 신발 2종류 이상부터 옷장 정보에서 추천 코디가 가능합니다)")
 
             today = datetime.date.today()
             yesterday = today - timedelta(days=1)
@@ -456,6 +459,9 @@ if st.session_state.logged_in:
             if "page" in st.session_state and st.session_state.page == "result":
                 st.image(st.session_state.image_url_male, caption="오늘 뭐 입지?")
                 st.markdown(st.session_state.recommendation.replace("\n", "  \n"))
+                if st.button("외출 정보 입력 페이지로"):
+                    st.session_state.add_cloths = False
+                    st.rerun()
 
                 # 이미지 저장
                 images_folder = './images'
