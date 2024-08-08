@@ -149,21 +149,24 @@ if st.session_state.logged_in:
             st.session_state.cloths = ""
         if "types" not in st.session_state:
             st.session_state.types = ""
+        if "material" not in st.session_state:
+            st.session_state.material = ""
         if "color" not in st.session_state:
             st.session_state.color = ""
         for key, value in user_info_optional.items():
             if key == st.session_state.username:
                 count = 0
-                for cloths, types, color in user_info_optional[key]:
+                for cloths, types, material, color in user_info_optional[key]:
                     count += 1
                     st.write(f"## 옷 정보 {count}")
                     if cloths == "Tops": st.write(f"상의")
                     elif cloths == "Bottoms": st.write(f"하의")
                     elif cloths == "Shoes": st.write(f"신발")
                     st.write(f"{types}")
+                    st.write(f"{material}")
                     st.write(f"{color}")
                     if st.button("삭제",key=f"button{count}"):
-                        user_info_optional[st.session_state.username].remove([cloths,types,color])
+                        user_info_optional[st.session_state.username].remove([cloths,types,material,color])
                         new_text = str(user_info_optional)
                         with open('./user_info_optional.txt','w',encoding='UTF-8') as f:
                             f.write(new_text)
@@ -171,7 +174,7 @@ if st.session_state.logged_in:
 
         # 옷 종류 변환을 위한 매핑 딕셔너리
         clothes_mapping = {
-            "상의": {
+            "Tops": {
                 "반팔": "Short sleeves",
                 "긴팔": "Long sleeves",
                 "니트": "Knitwear",
@@ -180,14 +183,14 @@ if st.session_state.logged_in:
                 "후드티": "Hoodie",
                 "폴로 셔츠": "Polo shirts"
             },
-            "하의": {
+            "Bottoms": {
                 "반바지": "Shorts",
                 "긴바지": "Pants",
                 "청바지": "Jeans",
                 "치마": "Skirts",
                 "슬랙스": "Slacks"
             },
-            "신발": {
+            "Shoes": {
                 "운동화": "Sneakers",
                 "로퍼": "Loafers",
                 "부츠": "Boots",
@@ -196,24 +199,51 @@ if st.session_state.logged_in:
             }
         }
 
+        material_mapping = {
+            "상의":{
+                "면" : "Cotton",
+                "폴리에스터" : "Polyester",
+                "나일론" : "Nylon",
+                "울" : "Wool",
+                "린넨" : "Linen"
+            },
+            "하의":{
+                "면" : "Cotton",
+                "폴리에스터" : "Polyester",
+                "데님" : "Denim",
+                "울" : "Wool",
+                "린넨" : "Linen"
+            },
+            "신발":{
+                "가죽": "Leather",
+                "캔버스": "Canvas",
+                "스웨이드": "Suede",
+                "메쉬": "Mesh"
+            }
+        }
+
         # 옷 정보 입력 부분
         st.session_state.cloths = st.selectbox("옷 구분", ("상의", "하의", "신발"))
         if st.session_state.cloths == "상의":
             st.session_state.cloths = "Tops"
             st.session_state.types = st.selectbox("상의 종류", ("반팔", "긴팔", "니트", "셔츠", "맨투맨", "후드티", "폴로 셔츠"))
+            st.session_state.material = st.selectbox("상의 소재", ("면", "폴리에스터", "나일론", "울", "린넨"))
+
         elif st.session_state.cloths == "하의":
             st.session_state.cloths = "Bottoms"
             st.session_state.types = st.selectbox("하의 종류", ("반바지", "긴바지", "청바지", "치마", "슬랙스"))
+            st.session_state.material = st.selectbox("하의 소재", ("면", "폴리에스터", "데님", "울", "린넨"))
         elif st.session_state.cloths == "신발":
             st.session_state.cloths = "Shoes"
             st.session_state.types = st.selectbox("신발 구분", ("운동화", "로퍼", "부츠", "슬리퍼", "구두"))
+            st.session_state.material = st.selectbox("신발 소재", ("가죽", "캔버스", "스웨이드", "메쉬"))
         st.session_state.color = st.selectbox("색상", ("흰색", "검은색", "회색", "네이비", "베이지", "카키", "빨간색", "분홍색", "주황색", "노란색", "초록색", "하늘색", "파란색", "보라색"))
 
         # 선택된 값들을 영어로 변환하여 저장
         selected_cloth_type = clothes_mapping[st.session_state.cloths][st.session_state.types]
 
         if st.button("추가"):
-            user_info_optional[st.session_state.username].append([st.session_state.cloths, selected_cloth_type, st.session_state.color])
+            user_info_optional[st.session_state.username].append([st.session_state.cloths, st.session_state.types, st.session_state.material,st.session_state.color])
             new_text = str(user_info_optional)
             with open('./user_info_optional.txt', 'w', encoding='UTF-8') as f:
                 f.write(new_text)
@@ -280,7 +310,10 @@ if st.session_state.logged_in:
             st.session_state.tmp_value = get_fcst_value(json_data, fcst_date, fcst_time, 'TMP')
             # 강수확률 불러오기
             st.session_state.pop_value = get_fcst_value(json_data, fcst_date, fcst_time, 'POP')
-            st.session_state.closet = user_info_optional[st.session_state.username]
+            if st.session_state.username in user_info_optional:
+                st.session_state.closet = user_info_optional[st.session_state.username]
+            else:st.session_state.closet = "옷장 정보가 없습니다."
+            
 
             st.write(f"Forecast Value (TMP): {st.session_state.tmp_value}")
             st.write(f"Forecast Value (POP): {st.session_state.pop_value}")
