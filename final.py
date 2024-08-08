@@ -102,6 +102,7 @@ if not st.session_state.logged_in:
 
 # 로그인 성공 후
 if st.session_state.logged_in:
+    print(st.session_state.add_cloths)
     client = OpenAI(api_key=st.session_state.openai_api_key)
     translator = GoogleTranslator(source='ko', target='en')
 
@@ -126,6 +127,7 @@ if st.session_state.logged_in:
             st.session_state.city = ""
         if st.session_state.page == 0:
             st.session_state.gender = st.radio("성별을 선택해주세요",["남성", "여성"])
+            st.write("거주지를 입력해주세요.")
             st.session_state.do = st.selectbox("도를 선택해주세요",do_tuple)
             st.session_state.city = st.selectbox("시/군/구를 선택해주세요",do_city_dict[st.session_state.do])
             # 상체, 하체, 발 사이즈는 일단 사용 안 할 예정
@@ -161,6 +163,7 @@ if st.session_state.logged_in:
             st.write("(선택) 가지고 있는 옷 정보를 입력하시겠습니까? (나중에 언제든지 다시 입력할 수 있습니다.)")
             if st.button("예"):
                 st.session_state.add_cloths = True
+                print(st.session_state.add_cloths)
                 st.rerun()
             if st.button("아니오"):
                 st.rerun()
@@ -226,10 +229,12 @@ if st.session_state.logged_in:
 
         if st.button("외출 정보 입력 페이지로"):
             st.session_state.add_cloths = False
+            st.session_state.main_page = 0
             st.rerun()
             
         
     else: # 재방문 시 메인 페이지로 이동
+        print(st.session_state.add_cloths)
         st.session_state.gender = user_info[st.session_state.username][0]
         st.session_state.do = user_info[st.session_state.username][1]
         st.session_state.city = user_info[st.session_state.username][2]
@@ -459,9 +464,6 @@ if st.session_state.logged_in:
             if "page" in st.session_state and st.session_state.page == "result":
                 st.image(st.session_state.image_url_male, caption="오늘 뭐 입지?")
                 st.markdown(st.session_state.recommendation.replace("\n", "  \n"))
-                if st.button("외출 정보 입력 페이지로"):
-                    st.session_state.add_cloths = False
-                    st.rerun()
 
                 # 이미지 저장
                 images_folder = './images'
@@ -478,6 +480,10 @@ if st.session_state.logged_in:
                             file_name=os.path.basename(saved_image_path),
                             mime="image/png"
                         )
+                    if st.button("외출 정보 입력 페이지로"):
+                        st.session_state.add_cloths = False
+                        st.session_state.main_page = 0
+                        st.rerun()
                 else:
                     st.error("이미지 저장에 실패했습니다.")
 
