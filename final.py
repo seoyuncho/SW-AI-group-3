@@ -246,7 +246,9 @@ if st.session_state.logged_in:
             st.session_state.main_page = 0
         if st.session_state.main_page == 0:
             st.title("외출 정보를 알려주세요!")
-            st.session_state.outing = st.text_input("오늘은 무슨 일로 외출하시나요?","ex) 가까운 공원에 산책하러 가")
+            if "outing" not in st.session_state:
+                st.session_state.outing = "ex) 가까운 공원에 산책하러 가"
+            st.session_state.outing = st.text_input("오늘은 무슨 일로 외출하시나요?",st.session_state.outing)
             time_options = [time(hour, 0) for hour in range(24)]
             time = st.selectbox("시간 선택", time_options, format_func=lambda t: t.strftime('%H:%M'))
             st.session_state.time = f'{str(time)[0:2]}{str(time)[3:5]}' 
