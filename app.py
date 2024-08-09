@@ -234,4 +234,3 @@ if st.session_state.logged_in: # 로그인 시 다음 페이지로 이동
             st.write(f"외출 목적 : {st.session_state.outing}")
             st.write(f"시간 : {st.session_state.time}")
             st.write(f"옷장 정보 : {st.session_state.closet}")
-
